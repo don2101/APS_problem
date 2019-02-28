@@ -16,36 +16,33 @@
 
 
 class Dnode :
-    data = -1
-    next = None
+    data = 99999
+    front = None
     prev = None
     
 class DoublyList :
     head = Dnode()
     tail = Dnode()
-    head.next = tail
+    head.front = tail
     tail.prev = head
     
-    def put(self, data) :
+    def put(self, data, position=tail) :
         newNode = Dnode()
         newNode.data = data
-        newNode.next = self.tail
-        newNode.prev = self.tail.prev
-        self.tail.prev.next = newNode
-        self.tail.prev = newNode
+        newNode.front = position
+        newNode.prev = position.prev
+        position.prev.front = newNode
+        position.prev = newNode
     
-    def putList(self, tempList) :
+    def putList(self, tempList, n) :
         searchNode = self.head
-        firstNode = tempList.head.next
-        lastNode = tempList.tail.prev
         
-        while searchNode.next.data < firstNode.data :
-            searchNode = searchNode.next
+        while searchNode.front.data < tempList[0] and searchNode.front != self.tail :
+            searchNode = searchNode.front
             
-        searchNode.next.prev = lastNode
-        lastNode.next = searchNode.next
-        searchNode.next = firstNode
-        firstNode.prev = searchNode
+        for i in range(n) :
+            self.put(tempList[i], searchNode.front)
+            searchNode = searchNode.front
     
     def printList(self) :
         for i in range(10) :
@@ -68,11 +65,7 @@ while tc <= t :
     
     for i in range(m-1) :
         otherList = list(map(int, input().split()))
-        tempList = DoublyList()
-        for i in range(n) :
-            tempList.put(otherList[i])
-        
-        dList.putList(tempList)
+        dList.putList(otherList, n)
 
     print("#{}".format(tc), end="")
     dList.printList()
