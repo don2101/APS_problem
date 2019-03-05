@@ -42,11 +42,19 @@
 */
 
 /*
+사용 로직
+1. dfs
+2. 백트래킹
+3. 배열 대각선 제어
+*/
+
+/*
 배운것
 1. 함수 인자를 넘겨줄 때 다시 한번 더 확인
 2. isInside를 먼저 수행(segmentation fault, index out of range 발생 가능)
 3. 문제의 경우의 수를 다시 한번 더 생각하고 풀기
 */
+
 
 
 #include <iostream>
