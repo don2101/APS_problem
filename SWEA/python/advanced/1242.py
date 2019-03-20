@@ -1,3 +1,16 @@
+# 풀이 논리
+# 1. 배열을 받으면서 압축
+#   1.1 한줄을 받은 뒤 바로 위 배열과 비교
+#   1.2 같다면 배열에 저장하지 않는다
+# 2. 코드가 저장된 배열을 2진 배열로 변환
+# 3. 2진 배열의 끝부터 읽으면서 1인 부분부터 비교 시작
+#   3.1 7칸씩 읽어 dictionary에 있는지 비교
+#   3.2 dictionary에 없는 경우 binary_width를 1칸 증가
+#   3.3 존재할 경우 일치하지 않을 때 까지 읽고 일치하지 않는 위치를 저장
+# 4. 일치하지 않는 위치부터 visited 처리
+
+
+
 import sys
 
 code = {
@@ -14,106 +27,76 @@ number_code = {
     '0001011': 9,
 }
 
-def isSame(graph, visited, y, x, height):
-    cy = y
-    cx = x
-
-    for i in range(height):
-        visited[cy][cx] = True
-        if not visited[cy+1][cx] and graph[cy][cx] == graph[cy+1][cx]:
-            cy+=1
-        else:
-            return False
+def get_binary_code(graph, width, height):
+    binary_code = [['0' for _ in range(2000)] for _ in range(height)]
     
-    return True
-
-
-def calculate(graph, visited, y, x):
-    sy = y
-    sx = x
-    code_array = ['0' for _ in range(500)]
-    code_point = 0
+    for k in range(height) :
+        binary_point = 0
+        for i in range(width):
+            temp_code = code[graph[k][i]]
+            
+            for j in range(4):
+                binary_code[k][binary_point] = temp_code[j]
+                binary_point += 1
     
-    height_length = 0
+    return binary_code, binary_point
 
-    while graph[sy][x] == graph[sy+1][x]:
-        height_length += 1
-        sy += 1
 
-    sy = y
+def get_number_code(binary_code, visited, y, x, height):
+    start_y = y
+    start_x = x
 
-    while sx >= 0 and not visited[y][sx]:
-        if isSame(graph, visited, y, sx, height_length):
-            code_array[code_point] = graph[y][sx]
-            code_point += 1
-            sx -= 1
-        else:
-            break
-    
-    # for i in range(h):
-    #     for j in range(w):
-    #         print(graph[i][j], end="")
-    #     print()
-
-    bin_array = ['0' for _ in range(2000)]
-    bin_point = 0
-
-    for i in range(code_point-1, -1, -1):
-        num = code[code_array[i]]
-        for j in range(4):
-            bin_array[bin_point] = num[j]
-            bin_point += 1
-
-    bin_width = 1
-    
-    print(bin_array)
+    binary_width = 1
 
     while True:
-        temp_number = ''
-
-        for i in range(bin_point-(7*bin_width), bin_point):
-            temp_number += bin_array[i]
-
-        if number_code[temp_number] is not None:
+        temp_string = ''
+        
+        for i in range(x+1-7*binary_width, x+1, binary_width):
+            temp_string += binary_code[y][i]
+        if number_code[temp_string] is not None:
             break
-        else: bin_width += 1 
-    
-    ey = 0
-    for i in range(bin_point-1, -1, -1):
-        if bin_array[i] != '0':
-            ey = i
-            break
-    
-    sy = ey-(bin_width*56)+1
-    
-    num_array = [0 for _ in range(8)]
-    num_point = 0
-
-    count = 0
-    temp_array = ['0' for _ in range(7)]
-    for i in range(sy, ey+1, bin_width):
-        temp_array[count] = bin_array[i]
-        count += 1
-        if count >= 7:
-            string = ''
-            for j in range(7):
-                string += temp_array[j]
-            num_array[num_point] = number_code[string]
-            count = 0
-            num_point += 1
-    
-    odd = 0
-    even = 0
-    for i in range(7):
-        if i & 1:
-            even += num_array[i]
         else:
-            odd += num_array[i]
+            binary_width += 1
+
+    end_x = x+1-56*binary_width
     
-    result = odd*3 + even + num_array[7]
-    if result%10 == 0:
-        return odd+even+num_array[7]
-    else: return 0
+    count = 0
+    temp_string = ''
+    num_code = [0 for _ in range(8)]
+    num_point = 0
+    
+    for i in range(x+1-56*binary_width, x+1, binary_width):
+        temp_string += binary_code[y][i]
+        count += 1
+
+        if count >= 7 :
+            number = number_code[temp_string]
+            num_code[num_point] = number
+            num_point += 1
+            count = 0
+            temp_string = ''
+
+    while binary_code[start_y][x] == '1':
+        for i in range(end_x, start_x+1):
+            visited[start_y][i] = True
+        start_y += 1
+
+
+    return num_code
+
+
+
+
+def isSame(temp_list, graph_list, width):
+    for i in range(width):
+        if temp_list[i] != graph_list[i]:
+            return False
+
+    return True
+
+def list_copy(temp_list, graph_list, width):
+    for i in range(width):
+        graph_list[i] = temp_list[i]
 
 sys.stdin = open("sample_input.txt", "r")
 
@@ -125,15 +108,26 @@ while tc <= t:
     ans = 0
     h, w = (map(int, input().split()))
     graph = [[0 for _ in range(500)] for _ in range(2000)]
-    visited = [[False for _ in range(500)] for _ in range(2000)]
-
-    for i in range(h) :
-        graph[i] = input()
     
-    for i in range(h) :
-        for j in range(w-1, -1, -1) :
-            if graph[i][j] != '0' and not visited[i][j]:
-                ans += calculate(graph, visited, i, j)
+    graph_height = 0
+    list_copy(list(input()), graph[graph_height], w) 
+    graph_height += 1
+
+    for i in range(1, h) :
+        temp_list = list(input())
+        if not isSame(temp_list, graph[graph_height-1], w):
+            list_copy(temp_list, graph[graph_height], w)
+            graph_height += 1
+
+    binary_code, binary_point = get_binary_code(graph, w, graph_height)
+    visited = [[False for _ in range(binary_point)] for _ in range(graph_height)]
+    
+
+    for i in range(graph_height):
+        for j in range(binary_point-1, -1, -1):
+            if not visited[i][j] and binary_code[i][j] =='1':
+                number_code = get_number_code(binary_code, visited, i, j, graph_height)
+
     
     print("#{} {}".format(tc, ans))
     tc += 1
