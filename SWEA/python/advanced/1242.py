@@ -14,47 +14,70 @@ number_code = {
     '0001011': 9,
 }
 
+def isSame(graph, visited, y, x, height):
+    cy = y
+    cx = x
+
+    for i in range(height):
+        visited[cy][cx] = True
+        if not visited[cy+1][cx] and graph[cy][cx] == graph[cy+1][cx]:
+            cy+=1
+        else:
+            return False
+    
+    return True
+
+
 def calculate(graph, visited, y, x):
     sy = y
     sx = x
     code_array = ['0' for _ in range(500)]
     code_point = 0
     
-    while sx >= 0 and not visited[y][sx]:
-        code_array[code_point] = graph[y][sx]
-        code_point += 1
-        sx -= 1
-    
-    while graph[sy][x] != '0':
-        sy += 1
-    
-    for i in range(y, sy) :
-        for j in range(x, sx, -1):
-            visited[i][j] = True
+    height_length = 0
 
+    while graph[sy][x] == graph[sy+1][x]:
+        height_length += 1
+        sy += 1
+
+    sy = y
+
+    while sx >= 0 and not visited[y][sx]:
+        if isSame(graph, visited, y, sx, height_length):
+            code_array[code_point] = graph[y][sx]
+            code_point += 1
+            sx -= 1
+        else:
+            break
+    
     # for i in range(h):
     #     for j in range(w):
     #         print(graph[i][j], end="")
     #     print()
 
-
     bin_array = ['0' for _ in range(2000)]
     bin_point = 0
 
-    switch = False
-
     for i in range(code_point-1, -1, -1):
-        if code_array[i] != '0': switch = True
-        
-        if switch :
-            num = code[code_array[i]]
-            for j in range(4):
-                bin_array[bin_point] = num[j]
-                bin_point += 1
+        num = code[code_array[i]]
+        for j in range(4):
+            bin_array[bin_point] = num[j]
+            bin_point += 1
 
-    bin_length = bin_point
-    bin_width = bin_length // 56
-    print(bin_width)
+    bin_width = 1
+    
+    print(bin_array)
+
+    while True:
+        temp_number = ''
+
+        for i in range(bin_point-(7*bin_width), bin_point):
+            temp_number += bin_array[i]
+
+        if number_code[temp_number] is not None:
+            break
+        else: bin_width += 1 
+    
     ey = 0
     for i in range(bin_point-1, -1, -1):
         if bin_array[i] != '0':
