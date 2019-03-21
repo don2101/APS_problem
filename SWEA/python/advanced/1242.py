@@ -6,7 +6,8 @@
 # 3. 2진 배열의 끝부터 읽으면서 1인 부분부터 비교 시작
 #   3.1 7칸씩 읽어 dictionary에 있는지 비교
 #   3.2 dictionary에 없는 경우 binary_width를 1칸 증가
-#   3.3 존재할 경우 일치하지 않을 때 까지 읽고 일치하지 않는 위치를 저장
+#   3.3 dictionary에 존재할 경우 일치하지 않을 때 까지 읽고 일치하지 않는 위치를 저장
+#       3.3.1 dictionary에 존재 하더라도 다른 width일 수 있으므로 이를 따로 처리
 # 4. 일치하지 않는 위치부터 visited 처리
 
 
@@ -50,11 +51,20 @@ def get_number_code(binary_code, visited, y, x, height):
     while True:
         temp_string = ''
         
+        c1 = 0
+        c2 = 0
         for i in range(x+binary_width-7*binary_width, x+1, binary_width):
+            if binary_code[y][i] == '1': c1 += 1
             temp_string += binary_code[y][i]
         
+        for i in range(x+1-7*binary_width, x+1, 1):
+            if binary_code[y][i] == '1': c2 += 1
+        
         if temp_string in number_code:
-            break
+            if c2 // binary_width == c1 :
+                break
+            else :
+                binary_width += 1    
         else:
             binary_width += 1
     
@@ -80,7 +90,7 @@ def get_number_code(binary_code, visited, y, x, height):
         for i in range(end_x, x+1):
             visited[start_y][i] = True
         start_y += 1
-
+    print(binary_width)
     return num_code
 
 def get_ans(num_code):
