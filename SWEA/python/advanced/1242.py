@@ -10,7 +10,6 @@
 # 4. 일치하지 않는 위치부터 visited 처리
 
 
-
 import sys
 
 code = {
@@ -51,21 +50,22 @@ def get_number_code(binary_code, visited, y, x, height):
     while True:
         temp_string = ''
         
-        for i in range(x+1-7*binary_width, x+1, binary_width):
+        for i in range(x+binary_width-7*binary_width, x+1, binary_width):
             temp_string += binary_code[y][i]
-        if number_code[temp_string] is not None:
+        
+        if temp_string in number_code:
             break
         else:
             binary_width += 1
-
-    end_x = x+1-56*binary_width
+    
+    end_x = x+binary_width-56*binary_width
     
     count = 0
     temp_string = ''
     num_code = [0 for _ in range(8)]
     num_point = 0
     
-    for i in range(x+1-56*binary_width, x+1, binary_width):
+    for i in range(x+binary_width-56*binary_width, x+1, binary_width):
         temp_string += binary_code[y][i]
         count += 1
 
@@ -77,14 +77,27 @@ def get_number_code(binary_code, visited, y, x, height):
             temp_string = ''
 
     while binary_code[start_y][x] == '1':
-        for i in range(end_x, start_x+1):
+        for i in range(end_x, x+1):
             visited[start_y][i] = True
         start_y += 1
 
-
     return num_code
 
-
+def get_ans(num_code):
+    odd = 0
+    even = 0
+    for i in range(7):
+        if i & 1:
+            even += num_code[i]
+        else:
+            odd += num_code[i]
+    
+    valid_code = num_code[7]
+    
+    if (odd*3 + even + valid_code) % 10 == 0:
+        return odd + even + valid_code
+    else:
+        return 0
 
 
 def isSame(temp_list, graph_list, width):
@@ -93,6 +106,7 @@ def isSame(temp_list, graph_list, width):
             return False
 
     return True
+
 
 def list_copy(temp_list, graph_list, width):
     for i in range(width):
@@ -118,17 +132,16 @@ while tc <= t:
         if not isSame(temp_list, graph[graph_height-1], w):
             list_copy(temp_list, graph[graph_height], w)
             graph_height += 1
-
+    
     binary_code, binary_point = get_binary_code(graph, w, graph_height)
     visited = [[False for _ in range(binary_point)] for _ in range(graph_height)]
-    
 
     for i in range(graph_height):
         for j in range(binary_point-1, -1, -1):
-            if not visited[i][j] and binary_code[i][j] =='1':
-                number_code = get_number_code(binary_code, visited, i, j, graph_height)
+            if not visited[i][j] and binary_code[i][j] == '1':
+                num_code = get_number_code(binary_code, visited, i, j, graph_height)
+                ans += get_ans(num_code)
 
-    
     print("#{} {}".format(tc, ans))
     tc += 1
 
