@@ -1,5 +1,5 @@
-n = 10
-r = 5
+n = 3
+r = 2
 array = [i for i in range(n)]
 count = 0
 
@@ -20,3 +20,25 @@ def permutation(array, k) :
 permutation(array, 0)
 print(count)
 
+
+visited = [False for i in range(n)]
+temp = [0 for i in range(n)]
+array = [i for i in range(n)]
+count = 0
+
+def permutation2(array, visited, temp, k):
+    if k == n:
+        print(temp[:r])
+        return
+
+    for i in range(n):
+        if visited[i]: continue
+        
+        temp[k] = array[i]
+        visited[i] = True
+        permutation2(array, visited, temp, k+1)
+        visited[i] = False
+
+permutation2(array, visited, temp, 0)
+
+    
