@@ -1,3 +1,9 @@
+# 1. 이진 탐색, 가지 치기 문제
+# 2. 조건: 다음으로 find가 갖게 될 값과 이전의 find 값이 동일하면 조건에 부합하지 않는것으로 설정
+# 3. find = 1: 오른쪽, find = -1: 왼쪽
+# 4. 이진 탐색을 하며 조건에 부합하지 않을 경우 탐색을 종료
+
+
 t = int(input())
 tc = 1
 ans = 0
@@ -38,10 +44,12 @@ def binary_search(a, s, e, num, find):
         if find < 1:
             find = 1
             binary_search(a, mid+1, e, num, find)
+        else: return
     elif a[mid] > num:
         if find > -1:
             find = -1
             binary_search(a, s, mid-1, num, find)
+        else: return
     else:
         if find <= 1 and find >= -1:
             ans += 1
@@ -52,6 +60,8 @@ while tc <= t:
     n, m = (map(int ,input().split()))
     a = list(map(int, input().split()))
     b = list(map(int, input().split()))
+    
+    a.sort()
     
     for i in range(m):
         binary_search(a, 0, n-1, b[i], 0)
