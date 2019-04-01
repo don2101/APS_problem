@@ -1,3 +1,7 @@
+# 1. 다익스트라 알고리즘 문제
+# 2. 배열에 각 노드간 거리를 저장. 1차원 배열 dist에 시작 정점으로 부터의 거리를 저장
+
+
 t = int(input())
 tc = 1
 ans = 9999999
@@ -43,5 +47,3 @@ while tc <= t:
     ans = dist[n]
     print("#{} {}".format(tc, ans))
     tc += 1
-    
-	
