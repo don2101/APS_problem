@@ -47,3 +47,4 @@ while tc <= t:
 
     print("#{} {}".format(tc, ans))
     tc += 1
+    

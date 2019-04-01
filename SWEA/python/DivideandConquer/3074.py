@@ -85,28 +85,26 @@ while tc <= t:
         max_upheap(i, i+1)
         min_upheap(i, i+1)
 
-    pre_min_idx = 0
-    pre_max_idx = 0
-
     while True:
         find = False
         
         min_idx = min_downheap(n)
         max_idx = max_downheap(n)
         
-        max_half = (gate[max_idx]//original[max_idx])//2
-        min_half = (gate[min_idx]//original[min_idx])//2
+        max_time = gate[max_idx]
+        min_time = gate[min_idx]
+        half_time = (max_time+min_time)//2
 
-        if gate[min_idx]+original[min_idx] < gate[max_idx]:
-            gate[max_idx] = original[max_idx]*max_half
-            
-            gate[min_idx] = original[min_idx]*(max_half+min_half)
+        half_count = (max_time-half_time)//original[max_idx]
+        
+        if half_count > 0:
+            gate[max_idx] += half_count*original[min_idx]
+            gate[min_idx] -= half_count*original[max_idx]
 
             min_upheap(min_idx, n)
             max_upheap(max_idx, n)
-            
             find = True
-        
+
         if not find: break
     
     max_idx = max_heap[1]
