@@ -1,3 +1,5 @@
+# 1. Disjoint-Set 문제. find와 union을 구현.
+
 t = int(input())
 tc = 1
 
