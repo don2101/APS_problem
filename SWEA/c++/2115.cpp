@@ -63,7 +63,7 @@ int main(void) {
                 }
 
                 if(sum > c) {
-                    scan(i, j)
+                    scan(i, j);
                 } else {
                     dp[i][j] = doubleSum;
                 }
@@ -74,21 +74,28 @@ int main(void) {
         int maxSecond = 0;
         for(int i = 0; i < n; ++i) {
             for(int j = 0; j < n; ++j) {
-                for(int a = 0; a < n; ++a) {
+                if(maxFirst < dp[i][j]) {
+                    maxFirst = dp[i][j];
+                }
+                maxSecond = 0;
+                for(int a = i; a < n; ++a) {
                     if(i == a) {
                         for(int b = j+m; b < n; ++b) {
-                            
+                            if(maxSecond < dp[a][b]) {
+                                maxSecond = dp[a][b];
+                            }
                         }
                     } else {
                         for(int b = 0; b < n; ++b) {
-                        
+                            if(maxSecond < dp[a][b]) {
+                                maxSecond = dp[a][b];
+                            }
                         }
                     }
-
                 }
+                if(ans < maxFirst + maxSecond) ans = maxFirst + maxSecond;
             }
         }
-        
         
         printf("#%d %d\n", tc, ans);
     }
