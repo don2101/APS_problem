@@ -98,21 +98,17 @@ int main(void) {
             while(remain > 0) {
                 count++;
                 for(int j = 0; j < people; ++j) {
+                    if(dist[j] > 0) {
+                        dist[j]--;
+                    }
+
                     if(dist[j] == 0 && !visited[j]) {
                         if(waiting[peopleToStair[j]] < 3 && waiting[peopleToStair[j]] < st[peopleToStair[j]]) {
                             waiting[peopleToStair[j]]++;
                             dist[j] = st[peopleToStair[j]];
                             visited[j] = true;
                         }
-                    }
-                }
-                
-                for(int j = 0; j < people; ++j) {
-                    if(dist[j] > 0) {
-                        dist[j]--;
-                    }
-
-                    if(dist[j] == 0 && visited[j]) {
+                    }else if(dist[j] == 0 && visited[j]) {
                         remain--;
                         waiting[peopleToStair[j]]--;
                     }
