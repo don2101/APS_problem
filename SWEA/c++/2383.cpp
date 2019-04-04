@@ -16,7 +16,8 @@
 4. 1초씩 증가하며 dist[]의 값을 1개씩 줄임
 5. dist[]의 값이 0이 되고 !visited[]면 입구에 도착한 것으로 간주(while문 처음에 실행) => 기다리는 사람이 없을 경우 계단 위로 올림(waiting[] 1증가, dist[] = 계단 길이, visited[]=true)
 6. dist[]가 0이 되고 visited[]면 계단을 내려온 것으로 간주 => remain 1 감소, waiting[] 1 감소
-7. remain을 사람 수로 초기화, time = 0으로 초기화, visited[] = false, waiting[] = 0, peopleToStair[]재설정 하여 remain이 0이 될 때 까지 반복
+7. 상태: 필드에 있는 상태(!visited[], distance[] > 0), 입구에 도착한 상태(!visited[], distance == 0), 계단을 내려가는 상태(visited[], distance > 0), 계단을 다 대려간 상태(visited[], distance == 0)
+8. remain을 사람 수로 초기화, time = 0으로 초기화, visited[] = false, waiting[] = 0, peopleToStair[]재설정 하여 remain이 0이 될 때 까지 반복
 */
 
 #include <iostream>
@@ -103,11 +104,17 @@ int main(void) {
                             dist[j] = st[peopleToStair[j]];
                             visited[j] = true;
                         }
-                    } else if(dist[j] == 0 && visited[j]) {
+                    }
+                }
+                
+                for(int j = 0; j < people; ++j) {
+                    if(dist[j] > 0) {
+                        dist[j]--;
+                    }
+
+                    if(dist[j] == 0 && visited[j]) {
                         remain--;
                         waiting[peopleToStair[j]]--;
-                    } else if(dist[j] > 0) {
-                        dist[j]--;
                     }
                 }
             }
