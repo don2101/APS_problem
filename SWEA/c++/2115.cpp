@@ -4,13 +4,13 @@ using namespace std;
 
 int map[10][10];
 int dp[10][10];
-bool visited[10][10];
 int n;
 int m;
 int c;
 int ans;
 
 void scan(int y, int x) {
+
     int temp_list[5];
     int sum = 0;
     int doubleSum = 0;
@@ -18,19 +18,20 @@ void scan(int y, int x) {
 
     for(int i = x; i < x+m; ++i) {
         temp_list[p] = map[y][i];
+        p++;
     }
 
     
-    for(int i = 0; i << m; ++i) {
+    for(int i = 0; i < 1<<p; ++i) {
         int tempSum = 0;
         int tempDoubleSum = 0;
-        for(int j = 0; j < m; ++j) {
+        for(int j = 0; j < p; ++j) {
             if(i & 1<<j) {
                 tempSum += temp_list[j];
                 tempDoubleSum += temp_list[j]*temp_list[j];
             }
         }
-        if(tempSum < c && tempDoubleSum > doubleSum) {
+        if(tempSum <= c && tempDoubleSum > doubleSum) {
             doubleSum = tempDoubleSum;
         }
     }
@@ -49,12 +50,16 @@ int main(void) {
         for(int i = 0; i < n; ++i) {
             for(int j = 0; j < n; ++j) {
                 scanf("%d", &map[i][j]);
-                visited[i][j] = false;
+                dp[i][j] = 0;
             }
         }
 
         for(int i = 0; i < n; ++i) {
             for(int j = 0; j < n-m+1; ++j) {
+                if(j+m > n) {
+                    break;
+                }
+
                 int sum = 0;
                 int doubleSum = 0;
                 for(int k = j; k < j+m; ++k) {
@@ -99,6 +104,4 @@ int main(void) {
         
         printf("#%d %d\n", tc, ans);
     }
-
-
 }
