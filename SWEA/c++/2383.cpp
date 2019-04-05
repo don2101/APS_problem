@@ -13,10 +13,12 @@
 1. 부분 집합, 시뮬레이션 문제
 2. 부분 집합을 사용하여 사람들을 계단으로 분배 => 1초씩 감소하며 이동, 계단을 내려간다
 3. 계단(stx[], sty[])으로 분배 하며 각 사람(px[], py[])마다 거리를 dist[]에 초기화
-4. 1초씩 증가하며 dist[]의 값을 1개씩 줄임
-5. dist[]의 값이 0이 되고 !visited[]면 입구에 도착한 것으로 간주(while문 처음에 실행) => 기다리는 사람이 없을 경우 계단 위로 올림(waiting[] 1증가, dist[] = 계단 길이, visited[]=true)
-6. dist[]가 0이 되고 visited[]면 계단을 내려온 것으로 간주 => remain 1 감소, waiting[] 1 감소
-7. 상태: 필드에 있는 상태(!visited[], distance[] > 0), 입구에 도착한 상태(!visited[], distance == 0), 계단을 내려가는 상태(visited[], distance > 0), 계단을 다 대려간 상태(visited[], distance == 0)
+4. walkToStair(): 계단으로 걸어가는 사람들의 거리를 1 감소. 계단에 도착할 경우 visited 처리
+5. downToStair(): 계단에서 내려가는 사람들의 거리를 1 감소. 계단을 모두 내려갔거나(dist==0) 계단에 도착한 사람일 경우 거리를 1 감소
+    5.1. 계단에 막 도착한 사람이 있을 경우(dist==0 && visited[]) dist를 계단수로 초기화
+    5.2. 계단을 내려가는 도중이면(dist>=2 && visited[]) dist 1 감소
+    5.3. 계단을 내려가기 직전이면(dist==1 && visited[]) dist를 2감소시키고 remain 1 감소
+    5.4. 계단을 다 내려간 사람이 있을경우, 이전 index에서 이미 입구에서 기다리고 있던 사람을 올린다
 8. remain을 사람 수로 초기화, time = 0으로 초기화, visited[] = false, waiting[] = 0, peopleToStair[]재설정 하여 remain이 0이 될 때 까지 반복
 */
 
@@ -37,6 +39,7 @@ int peopleToStair[10];
 int count;
 int ans;
 int n;
+int remain;
 
 
 int abs(int num) {
@@ -50,6 +53,44 @@ int distance(int px, int py, int sx, int sy) {
 }
 
 
+void walkToStair() {
+    for(int j = 0; j < people; ++j) {
+        if(dist[j] > 0 && !visited[j]) {
+            dist[j]--;
+        }
+
+        if(dist[j] == 0 && !visited[j]) {
+            visited[j] = true;
+        }
+    }
+}
+
+
+void downOnStair() {
+    for(int j = 0; j < people; ++j) {
+        if(dist[j] == 0 && visited[j]) {
+            if(waiting[peopleToStair[j]] < 3 && waiting[peopleToStair[j]] < st[peopleToStair[j]]) {
+                dist[j] = st[peopleToStair[j]];
+                waiting[peopleToStair[j]]++;
+            }
+        } else if(dist[j] >= 2 && visited[j]) {
+            dist[j]--;
+        } else if(dist[j] == 1 && visited[j]) {
+            dist[j] -= 2;
+            remain--;
+            waiting[peopleToStair[j]]--;
+            for(int i = 0; i < j; ++i) {
+                if(dist[i] == 0 && visited[i]) {
+                    if(waiting[peopleToStair[i]] < 3 && waiting[peopleToStair[i]] < st[peopleToStair[i]]) {
+                        dist[i] = st[peopleToStair[i]];
+                        waiting[peopleToStair[i]]++;
+                    }
+                }
+            }
+        }
+    }
+}
+
 int main(void) {
     int t, tc = 0;
     scanf("%d", &t);
@@ -59,7 +100,7 @@ int main(void) {
         scanf("%d", &n);
         int temp = 0;
         int stair = 0;
-        int remain = 0;
+        remain = 0;
         people = 0;
         
         for(int i = 0; i < n; ++i) {
@@ -67,7 +108,7 @@ int main(void) {
                 scanf("%d", &temp);
                 if(temp == 1) {
                     px[people] = j;
-                    px[people] = i;
+                    py[people] = i;
                     people++;
                 } else if(temp >= 2 && temp <= 10) {
                     stx[stair] = j;
@@ -80,7 +121,8 @@ int main(void) {
         
         for(int i = 0; i < 1<<people; ++i) {
             for(int j = 0; j < people; ++j) {
-                if(i & 1<<j) {
+                int value = 1<<j;
+                if(i & value) {
                     peopleToStair[j] = 1;
                     dist[j] = distance(px[j], py[j], stx[1], sty[1]);
                 } else {
@@ -89,7 +131,10 @@ int main(void) {
                 }
             }
 
-            for(int j = 0; j < people; ++j) visited[j] = false;
+            for(int j = 0; j < people; ++j) {
+                visited[j] = false;
+            }
+            
             remain = people;
             count = 0;
             waiting[0] = 0;
@@ -97,24 +142,11 @@ int main(void) {
 
             while(remain > 0) {
                 count++;
-                for(int j = 0; j < people; ++j) {
-                    if(dist[j] > 0) {
-                        dist[j]--;
-                    }
-
-                    if(dist[j] == 0 && !visited[j]) {
-                        if(waiting[peopleToStair[j]] < 3 && waiting[peopleToStair[j]] < st[peopleToStair[j]]) {
-                            waiting[peopleToStair[j]]++;
-                            dist[j] = st[peopleToStair[j]];
-                            visited[j] = true;
-                        }
-                    }else if(dist[j] == 0 && visited[j]) {
-                        remain--;
-                        waiting[peopleToStair[j]]--;
-                    }
-                }
+                downOnStair();
+                walkToStair();
             }
             if(count < ans) ans = count;
+
         }
 
         printf("#%d %d\n", tc, ans);
