@@ -95,7 +95,7 @@ void operation(char oper, char direc) {
 
             char temp2[3];
             for(int i = 0; i < 3; ++i) {
-                temp2[i] = back[0][i];
+                temp2[i] = back[2][i];
             }
 
             for(int i = 0; i < 3; ++i) {
@@ -120,7 +120,7 @@ void operation(char oper, char direc) {
 
             char temp2[3];
             for(int i = 0; i < 3; ++i) {
-                temp2[i] = back[0][i];
+                temp2[i] = back[2][i];
             }
 
             for(int i = 0; i < 3; ++i) {
@@ -154,14 +154,14 @@ void operation(char oper, char direc) {
 
             char temp2[3];
             for(int i = 0; i < 3; ++i) {
-                temp2[i] = back[i][2];
+                temp2[i] = back[i][0];
             }
 
             for(int i = 0; i < 3; ++i) {
-                back[0][i] = up[i][2];
-                up[i][2] = front[i][2];
-                front[i][2] = down[i][2];
-                down[i][2] = temp2[i];
+                back[i][0] = up[2-i][2];
+                up[2-i][2] = front[2-i][2];
+                front[2-i][2] = down[2-i][2];
+                down[2-i][2] = temp2[i];
             }
         } else {
             int a = 0;
@@ -179,14 +179,14 @@ void operation(char oper, char direc) {
 
             char temp2[3];
             for(int i = 0; i < 3; ++i) {
-                temp2[i] = back[i][2];
+                temp2[i] = back[i][0];
             }
 
             for(int i = 0; i < 3; ++i) {
-                back[i][2] = down[i][2];
-                down[i][2] = front[i][2];
-                front[i][2] = up[i][2];
-                up[i][2] = temp2[i];
+                back[i][0] = down[2-i][2];
+                down[2-i][2] = front[2-i][2];
+                front[2-i][2] = up[2-i][2];
+                up[2-i][2]= temp2[i];
             }
         }
     } else if (oper == 'L') {
@@ -213,14 +213,14 @@ void operation(char oper, char direc) {
 
             char temp2[3];
             for(int i = 0; i < 3; ++i) {
-                temp2[i] = back[0][i];
+                temp2[i] = back[i][2];
             }
 
             for(int i = 0; i < 3; ++i) {
-                back[0][i] = down[0][i];
-                down[0][i] = front[0][i];
-                front[0][i] = up[0][i];
-                up[0][i] = temp2[i];
+                back[i][2] = down[2-i][0];
+                down[2-i][0] = front[2-i][0];
+                front[2-i][0] = up[2-i][0];
+                up[2-i][0] = temp2[i];
             }
         } else {
             int a = 0;
@@ -238,14 +238,14 @@ void operation(char oper, char direc) {
 
             char temp2[3];
             for(int i = 0; i < 3; ++i) {
-                temp2[i] = back[0][i];
+                temp2[i] = back[i][2];
             }
 
             for(int i = 0; i < 3; ++i) {
-                back[0][i] = up[0][i];
-                up[0][i] = front[0][i];
-                front[0][i] = down[0][i];
-                down[0][i] = temp2[i];
+                back[i][2] = up[2-i][0];
+                up[2-i][0] = front[2-i][0];
+                front[2-i][0] = down[2-i][0];
+                down[2-i][0] = temp2[i];
             }
         }
     } else if (oper == 'B') {
@@ -276,10 +276,10 @@ void operation(char oper, char direc) {
             }
 
             for(int i = 0; i < 3; ++i) {
-                up[0][i] = righ[0][i];
-                righ[0][i] = down[0][i];
-                down[0][i] = lef[0][i];
-                lef[0][i] = temp2[i];
+                up[0][i] = righ[i][2];
+                righ[i][2] = down[2][2-i];
+                down[2][2-i] = lef[2-i][0];
+                lef[2-i][0] = temp2[i];
             }
         } else {
             int a = 0;
@@ -301,10 +301,10 @@ void operation(char oper, char direc) {
             }
 
             for(int i = 0; i < 3; ++i) {
-                up[0][i] = lef[0][i];
-                lef[0][i] = down[0][i];
-                down[0][i] = righ[0][i];
-                righ[0][i] = temp2[i];
+                up[0][i] = lef[2-i][0];
+                lef[2-i][0] = down[2][2-i];
+                down[2][i] = righ[i][2];
+                righ[i][2] = temp2[i];
             }
         }
     } else if (oper == 'F') {
@@ -331,14 +331,14 @@ void operation(char oper, char direc) {
 
             char temp2[3];
             for(int i = 0; i < 3; ++i) {
-                temp2[i] = up[0][i];
+                temp2[i] = up[2][i];
             }
 
             for(int i = 0; i < 3; ++i) {
-                up[0][i] = lef[0][i];
-                lef[0][i] = down[0][i];
-                down[0][i] = righ[0][i];
-                righ[0][i] = temp2[i];
+                up[2][i] = lef[2-i][2];
+                lef[2-i][2] = down[0][2-i];
+                down[0][2-i] = righ[i][0];
+                righ[i][0] = temp2[i];
             }
         } else {
             int a = 0;
@@ -356,14 +356,14 @@ void operation(char oper, char direc) {
 
             char temp2[3];
             for(int i = 0; i < 3; ++i) {
-                temp2[i] = up[0][i];
+                temp2[i] = up[2][i];
             }
 
             for(int i = 0; i < 3; ++i) {
-                up[0][i] = righ[0][i];
-                righ[0][i] = down[0][i];
-                down[0][i] = lef[0][i];
-                lef[0][i] = temp2[i];
+                up[2][i] = righ[i][0];
+                righ[i][0] = down[0][2-i];
+                down[0][2-i] = lef[2-i][2];
+                lef[2-i][2] = temp2[i];
             }
         }
     }
