@@ -16,16 +16,16 @@ typedef struct {
 extern Result query(int guess[]);
 
 bool used[10][10][10][10];
-int queryList[5400][4];
-int answered[5400][4];
-Result resultList[5400];
+int queryList[10000][4];
+int answered[10000][4];
+Result resultList[10000];
 int cur;
 int last;
 int ansCur;
 int ansLast;
 
 
-bool checkQuery(int *tryQuery) {
+bool checkQuery(int tryQuery[]) {
     for(int i = 0; i < ansLast; ++i) {
         int strike = 0;
         int ball = 0;
@@ -52,18 +52,18 @@ bool checkQuery(int *tryQuery) {
 void initQuery() {
     int tryQuery[4];
     
-    for(int a = 0; a < 9; ++a) {
+    for(int a = 0; a < 10; ++a) {
         tryQuery[0] = a;
     	
-        for(int b = 0; b < 9; ++b) {
+        for(int b = 0; b < 10; ++b) {
             if(b == a) continue;
             tryQuery[1] = b;
         	
-            for(int c = 0; c < 9; ++c) {
+            for(int c = 0; c < 10; ++c) {
                 if(c == a || c == b) continue;
             	tryQuery[2] = c;
             	
-                for(int d = 0; d < 9; ++d) {
+                for(int d = 0; d < 10; ++d) {
                 	if(d== a || d == b || d == c) continue;
             		tryQuery[3] = d;
                     
@@ -222,7 +222,7 @@ int main() {
 	int total_score = 0;
 	int total_querycount = 0;;
 	
-    // freopen("sample_input.txt", "r", stdin);
+    freopen("tt.txt", "r", stdin);
 	setbuf(stdout, NULL);
 
 	scanf("%d", &T);
@@ -234,7 +234,9 @@ int main() {
 
 		if (!check(guess)) querycount = MAX_QUERYCOUNT;
         if (querycount <= limit_query) total_score++;
-		printf("#%d %d\n", testcase, querycount);
+		printf("#%d %d", testcase, querycount);
+        for(int i = 0; i < 4; ++i) printf("%d", guess[i]);
+        printf("\n");
 		total_querycount += querycount;
     }
 	if (total_querycount > MAX_QUERYCOUNT) total_querycount = MAX_QUERYCOUNT;
