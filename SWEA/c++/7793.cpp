@@ -20,8 +20,18 @@ int aqx[2500];
 int aqy[2500];
 int dqx[2500];
 int dqy[2500];
+int aqr, aqf;
+int dqr, dqf;
 bool visited[50][50];
 
+
+void expandAngel() {
+
+}
+
+void expandDevil() {
+    
+}
 
 int main(int argc, char** argv)
 {
@@ -32,6 +42,17 @@ int main(int argc, char** argv)
     while(++tc <= t) {
         ans = 0;
         depth = 0;
+
+        cin >> n >> m;
+
+        for(int i = 0; i < n; ++i) {
+            for(int j = 0; j < m; ++j) {
+                cin >> map[i][j];
+            }
+        }
+
+        
+        
 
     }
 }
