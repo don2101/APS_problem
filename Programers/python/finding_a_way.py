@@ -19,6 +19,8 @@ def make_tree_right(current):
     # 현재보다 x가 크고 부모 보다 낮은 x 값을 오른쪽 자식으로
     left = None
     right = None
+
+    #left limit right limit 추가
     
     for node in tree_data[height]:
         if node[0] > tree_node[current][0]:
