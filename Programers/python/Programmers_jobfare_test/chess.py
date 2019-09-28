@@ -38,7 +38,5 @@ def solution(bishops):
         for j in range(0, 8):
             if chess_map[i][j] == 0:
                 answer += 1
-                
-    print(chess_map)
-    
+                    
     return answer
