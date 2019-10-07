@@ -52,5 +52,4 @@ void merge(int *array, int start, int mid, int end) {
     for(int p = start; p <= end; ++p) {
         array[p] = tempArray[p-start];
     }
-
 }

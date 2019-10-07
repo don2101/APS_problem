@@ -11,7 +11,7 @@
 #define LARGE_NUM 1000000
 
 
-const int arraySize = 100000;
+const int arraySize = 10000;
 
 
 void printArray(int *array, int length) {
@@ -19,7 +19,7 @@ void printArray(int *array, int length) {
     cout << endl;
 }
 
-int getRandomNumber() {
+int getRandomSortNumber() {
     int num = rand() % LARGE_NUM + 1;
 
     return num;
@@ -32,7 +32,7 @@ void mergeSortTest() {
     int start, end;
 
     for(int i = 0; i < arraySize; ++i) {
-        array[i] = getRandomNumber();
+        array[i] = getRandomSortNumber();
     }
 
     start = clock();
@@ -42,7 +42,7 @@ void mergeSortTest() {
     cout << "Merge Sort: " << (double)(end - start) << "ms" << endl;
 
     for(int i = 0; i < arraySize; ++i) {
-        array[i] = getRandomNumber();
+        array[i] = getRandomSortNumber();
     }
 
     start = clock();
@@ -50,9 +50,6 @@ void mergeSortTest() {
     end = clock();
 
     cout << "Insertion Sort: " << (double)(end - start) << "ms" << endl;
-
-
-
 }
 
 
