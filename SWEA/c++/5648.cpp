@@ -28,6 +28,7 @@ double y[1000];
 bool alive[1000];
 int direc[1000];
 int energy[1000];
+int atom;
 int remain;
 
 bool isInside(double y_, double x_) {
@@ -37,14 +38,21 @@ bool isInside(double y_, double x_) {
     return true;
 }
 
-void destroyOne(int i) {
-    energy[i] = energy[n-1];
-    alive[i] = alive[n-1];
-    x[i] = x[n-1];
-    y[i] = y[n-1];
-    direc[i] = direc[n-1];
-    n--;
+
+void destroyOne(int num) {
+    energy[num] = 0;
+    alive[num] = false;
+    x[num] = 5000;
+    y[num] = 5000;
     remain--;
+}
+
+void destroy() {
+    for(int num = 0; num < n; ++num) {
+        if(!isInside(y[num], x[num])) {
+            destroyOne(num);
+        }
+    }
 }
 
 double abs(double num) {
@@ -54,39 +62,109 @@ double abs(double num) {
 }
 
 bool isSame(int i, int j) {
-    if(abs(x[i]-x[j]) < 0.1 && abs(y[i]-y[j]) < 0.1) return true;
+    if(abs(abs(x[i])-abs(x[j])) < 0.1 && abs(abs(y[i])-abs(y[j])) < 0.1) return true;
 
     return false;
 }
 
+bool isSameX(int i, int j) {
+    if(abs(abs(x[i])-abs(x[j])) < 0.1) return true;
+
+    return false;
+}
+
+void merge(int start, int end) {
+    double tempX[1000];
+    double tempY[1000];
+    int tempEnergy[1000];
+    int tempDirec[1000];
+    bool tempLive[1000];
+    
+    int mid = (start+end) / 2;
+
+    int i = start;
+    int j = mid+1;
+
+    for(int k = start; k <= end; ++k) {
+        if(i > mid) {
+            tempX[k] = x[i];
+            tempY[k] = y[i];
+            tempEnergy[k] = energy[i];
+            tempDirec[k] = direc[i];
+            tempLive[k] = alive[i];
+            i++;
+        } else if(j > end) {
+            tempX[k] = x[j];
+            tempY[k] = y[j];
+            tempEnergy[k] = energy[j];
+            tempDirec[k] = direc[j];
+            tempLive[k] = alive[j];
+            j++;
+        } else if(x[i] < x[j]) {
+            tempX[k] = x[i];
+            tempY[k] = y[i];
+            tempEnergy[k] = energy[i];
+            tempDirec[k] = direc[i];
+            tempLive[k] = alive[i];
+            i++;
+        } else {
+            tempX[k] = x[j];
+            tempY[k] = y[j];
+            tempEnergy[k] = energy[j];
+            tempDirec[k] = direc[j];
+            tempLive[k] = alive[j]; 
+            j++;
+        }
+    }
+
+    for(int k = start; k <= end; ++k) {
+        x[k] = tempX[k];
+        y[k] = tempY[k];
+        energy[k] = tempEnergy[k];
+        direc[k] = tempDirec[k];
+        alive[k] = tempLive[k]; 
+    }
+}
+
+void divide(int start, int end) {
+    if(start >= end) return;
+    int mid = (start+end) / 2;
+
+    divide(start, mid);
+    divide(mid+1, end);
+    merge(start, end);
+}
+
+void merge_sort() {
+    int start = 0;
+    int end = n-1;
+    int mid = (start+end) / 2;
+    
+    divide(start, mid);
+    divide(mid+1, end);
+    merge(start, end);
+}
 
 void sumEnergy() {
-    for(int i = 0; i < n-1;) {
-        if(!isInside(y[i], x[i])) {
-            destroyOne(i);
-            continue;
-        }
+    merge_sort();
+
+    for(int i = 0; i < n-1; ++i) {
+        if(!alive[i]) continue;
 
         int tempEnergy = energy[i];
-        for(int j = i+1; j < n;) {
-            if(!isInside(y[j], x[j])) {
-                destroyOne(j);
-                continue;
-            }
+        for(int j = i+1; j < n; ++j) {
+            if(!isSameX(i, j)) break;
+            if(!alive[j]) continue;
             
             if(isSame(i, j)) {
                 tempEnergy += energy[j];
                 destroyOne(j);
-            } else {
-                ++j;
             }
         }
 
         if(tempEnergy > energy[i]) {
             destroyOne(i);
             ans += tempEnergy;
-        } else {
-            ++i;
         }
     }
 }
@@ -104,7 +182,6 @@ void init() {
     cin >> n;
     ans = 0;
     remain = n;
-    
 
     for(int i = 0; i < n; ++i) {
         alive[i] = true;
@@ -114,6 +191,7 @@ void init() {
         x[i] = (double) tempX;
         y[i] = (double) tempY;
         cin >> direc[i] >> energy[i];
+
     }
 
 }
@@ -128,11 +206,18 @@ int main(int argc, char** argv)
 
         while(true) {
             move();
+            destroy();
+            sumEnergy();
+            if(remain == 0) break;
+
+            move();
+            destroy();
             sumEnergy();
             if(remain == 0) break;
         }
 
         cout << "#" << tc << " " << ans << endl;
+
     }
     
 
