@@ -38,6 +38,12 @@ bool isInside(double y_, double x_) {
 }
 
 void destroyOne(int i) {
+    if(i >= n-1) {
+        n--;
+        remain--;
+
+        return;
+    }
     energy[i] = energy[n-1];
     alive[i] = alive[n-1];
     x[i] = x[n-1];
@@ -45,6 +51,10 @@ void destroyOne(int i) {
     direc[i] = direc[n-1];
     n--;
     remain--;
+}
+
+void destroy() {
+    
 }
 
 double abs(double num) {
